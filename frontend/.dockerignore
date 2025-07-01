@@ -4,3 +4,4 @@
 .prettierrc
 .next/
 node_modules/
+.git

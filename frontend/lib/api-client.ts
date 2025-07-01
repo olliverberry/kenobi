@@ -62,14 +62,6 @@ class ApiClient {
     options: RequestInit = {},
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseUrl}${endpoint}`;
-
-    console.log('🔍 API Request Debug:');
-    console.log('  Base URL:', this.baseUrl);
-    console.log('  Endpoint:', endpoint);
-    console.log('  Full URL:', url);
-    console.log('  Method:', options.method || 'GET');
-    console.log('  Headers:', options.headers);
-
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
@@ -79,29 +71,14 @@ class ApiClient {
     };
 
     try {
-      console.log('📡 Making request to:', url);
       const response = await fetch(url, config);
-      console.log('📥 Response status:', response.status);
-      console.log(
-        '📥 Response headers:',
-        Object.fromEntries(response.headers.entries()),
-      );
-
       if (!response.ok) {
-        console.error('❌ HTTP error! status:', response.status);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log('✅ Response data:', data);
       return data;
     } catch (error) {
-      console.error('💥 API request failed:', error);
-      console.error('💥 Error details:', {
-        message: error instanceof Error ? error.message : String(error),
-        cause: error instanceof Error ? error.cause : undefined,
-        stack: error instanceof Error ? error.stack : undefined,
-      });
       throw error;
     }
   }

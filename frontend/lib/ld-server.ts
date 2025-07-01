@@ -16,7 +16,7 @@ class LaunchDarklyServer {
       kind: 'user',
       key: session?.user.email ?? 'anonymous',
       custom: {
-        userId: session?.user.id ?? 'anonymous',
+        userId: session?.user.userId ?? 'anonymous',
         email: session?.user.email ?? 'anonymous',
         firstName: session?.user.firstName ?? 'anonymous',
         lastName: session?.user.lastName ?? 'anonymous',

@@ -1,3 +1,6 @@
+# taken largely from nestjs's official example for docker deployments: 
+# https://docs.nestjs.com/deployment#dockerizing-your-application
+
 FROM node:22
 
 WORKDIR /usr/src/app

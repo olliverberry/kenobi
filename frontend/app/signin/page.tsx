@@ -37,37 +37,22 @@ export default async function SignInPage() {
               <form
                 action={async (formData) => {
                   'use server';
-                  console.log('🚀 Signin form submitted');
-                  console.log(
-                    '📝 Form data:',
-                    Object.fromEntries(formData.entries()),
-                  );
-
                   try {
-                    console.log('🔐 Calling signIn...');
                     await signIn('credentials', formData);
-                    console.log('✅ signIn completed successfully');
-                    // NextAuth will handle the redirect via the callback
                   } catch (error) {
-                    console.log('💥 signIn error:', error);
-
-                    // Check if this is a Next.js redirect (which is normal)
                     if (
                       error instanceof Error &&
                       error.message === 'NEXT_REDIRECT'
                     ) {
-                      console.log('🔄 Next.js redirect detected (normal)');
-                      throw error; // Re-throw to let Next.js handle the redirect
+                      throw error;
                     }
 
                     if (error instanceof AuthError) {
-                      console.log('🚨 AuthError detected:', error.type);
                       return redirect(
                         `${SIGNIN_ERROR_URL}?error=${error.type}`,
                       );
                     }
 
-                    console.error('💥 Unexpected error:', error);
                     throw error;
                   }
                 }}

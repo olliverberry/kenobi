@@ -1,3 +1,6 @@
+# taken largely from nextjs's official example for docker deployments: 
+# https://github.com/vercel/next.js/blob/canary/examples/with-docker/Dockerfile
+
 FROM node:22-alpine AS base
 
 # Install dependencies only when needed
