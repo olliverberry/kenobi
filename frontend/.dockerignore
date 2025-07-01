@@ -1,0 +1,6 @@
+.env
+.env.*
+.prettierignore
+.prettierrc
+.next/
+node_modules/

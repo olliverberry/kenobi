@@ -1,21 +1,40 @@
 import * as ld from '@launchdarkly/node-server-sdk';
+import { Session } from 'next-auth';
 
-// this is a server-side function that gets all feature flags
-// which is used in the frontend to initialize the launchdarkly
-// react sdk with initial feature flags. it is only intended to be used once.
-export async function getFeatureFlags(userContext: ld.LDContext) {
-    try {
-      const client = ld.init(process.env.LD_SERVER_SDK_SECRET!);
-      await client.waitForInitialization({
-        timeout: 5,
-      });
-      
-      const flagsState = await client.allFlagsState(userContext);
-      client.close();
-      
-      return flagsState.toJSON();
-    } catch (error) {
-      console.warn('Failed to get feature flags:', error);
-      return {};
+class LaunchDarklyServer {
+  private static client: ld.LDClient | undefined = undefined;
+
+  async initialize() {
+    LaunchDarklyServer.client = ld.init(process.env.LD_SERVER_SDK_SECRET!);
+    await LaunchDarklyServer.client.waitForInitialization({
+      timeout: 5,
+    });
+  }
+
+  async getInitialContext(session: Session) {
+    const userContext = {
+      kind: 'user',
+      key: session?.user.email ?? 'anonymous',
+      custom: {
+        userId: session?.user.id ?? 'anonymous',
+        email: session?.user.email ?? 'anonymous',
+        firstName: session?.user.firstName ?? 'anonymous',
+        lastName: session?.user.lastName ?? 'anonymous',
+        businessUnit: session?.user.businessUnit ?? 'anonymous',
+        title: session?.user.title ?? 'anonymous',
+      },
+    };
+
+    if (!LaunchDarklyServer.client) {
+      await this.initialize();
     }
+    const flagsState =
+      await LaunchDarklyServer.client!.allFlagsState(userContext);
+    return {
+      flags: flagsState.toJSON(),
+      context: userContext,
+    };
+  }
 }
+
+export const launchDarklyServer = new LaunchDarklyServer();

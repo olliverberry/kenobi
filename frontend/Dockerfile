@@ -1,6 +1,3 @@
-ARG NEXT_PUBLIC_LD_CLIENT_SDK_ID
-ARG NEXT_PUBLIC_API_BASE_URL
-
 FROM node:22-alpine AS base
 
 # Install dependencies only when needed
@@ -18,6 +15,12 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Accept build arguments for environment variables
+ARG NEXT_PUBLIC_LD_CLIENT_SDK_ID
+
+# Set environment variables for build time
+ENV NEXT_PUBLIC_LD_CLIENT_SDK_ID=$NEXT_PUBLIC_LD_CLIENT_SDK_ID
+
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
@@ -30,8 +33,6 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV NEXT_PUBLIC_LD_CLIENT_SDK_ID=${NEXT_PUBLIC_LD_CLIENT_SDK_ID}
-ENV NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
