@@ -1,0 +1,63 @@
+{
+    "family": "pov-app",
+    "containerDefinitions": [
+        {
+            "name": "frontend",
+            "image": "placeholder",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "containerPort": 3000,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "secrets": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "dependsOn": [
+                {   
+                    "containerName": "server",
+                    "condition": "HEALTHY"
+                }
+            ]
+        },
+        {
+            "name": "server",
+            "image": "placeholder",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "containerPort": 3000,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "healthCheck": {
+                "command": [
+                    "CMD-SHELL",
+                    "curl -f http://localhost:3000/api/povs || exit 1"
+                ],
+                "startPeriod": 60
+            }
+        }
+    ],
+    "taskRoleArn": "placeholder",
+    "executionRoleArn": "placeholder",
+    "networkMode": "awsvpc",
+    "volumes": [],
+    "placementConstraints": [],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "3072",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    }
+}
