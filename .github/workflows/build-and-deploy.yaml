@@ -127,7 +127,7 @@ jobs:
 
       - name: Deploy Amazon ECS service
         id: deploy-service
-        uses: aws-actions/amazon-ecs-deploy-service-task@v1
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ steps.render-server-container.outputs.task-definition }}
           service: ${{ vars.ECS_SERVICE }}
