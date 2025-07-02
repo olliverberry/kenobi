@@ -107,11 +107,6 @@ jobs:
             '.taskRoleArn = $task | .executionRoleArn = $exec' \
             .deployment/task-definition.json > .deployment/task-definition.with-roles.json
 
-      - name: Print resolved image URIs
-        run: |
-          echo "Frontend image: ${{ needs.build-and-push-frontend.outputs.image }}"
-          echo "Server image:   ${{ needs.build-and-push-server.outputs.image }}"
-
       - name: Render Amazon ECS task definition
         id: render-frontend-container
         uses: aws-actions/amazon-ecs-render-task-definition@v1
@@ -120,9 +115,9 @@ jobs:
           container-name: frontend
           image: ${{ steps.login-ecr.outputs.registry }}/${{ needs.build-and-push-frontend.outputs.image }}
           environment-variables: |
-            ENV_PORT=3000
+            ENV_PORT=3001
             AUTH_TRUST_HOST=true
-            AUTH_URL=http://localhost:3000
+            AUTH_URL=http://localhost:3001
             BACKEND_URL=http://server:3000
             NEXT_PUBLIC_LD_CLIENT_SDK_ID=${{ secrets.NEXT_PUBLIC_LD_CLIENT_SDK_ID }}
           secrets: |
