@@ -10,7 +10,7 @@ const cspHeader = `
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
-    connect-src 'self' https://pub.observability.app.launchdarkly.com https://otel.observability.app.launchdarkly.com https://clientstream.launchdarkly.com https://events.launchdarkly.com;
+    connect-src 'self' https://app.launchdarkly.com https://pub.observability.app.launchdarkly.com https://otel.observability.app.launchdarkly.com https://clientstream.launchdarkly.com https://events.launchdarkly.com;
     worker-src 'self' data: blob:;
     upgrade-insecure-requests;
 `;

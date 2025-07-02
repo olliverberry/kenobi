@@ -28,7 +28,9 @@ export default function LaunchDarklyProvider({
         bootstrap: flags,
         streaming: true, // Enable streaming for real-time updates
         plugins: [
-          new Observability(),
+          new Observability({
+            backendUrl: 'https://pub.observability.app.launchdarkly.com'
+          }),
           new SessionReplay(),
         ]
       }}
