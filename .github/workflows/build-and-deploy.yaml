@@ -46,7 +46,7 @@ jobs:
           # be deployed to ECS.
           docker build -t $ECR_REGISTRY/$ECR_SERVER_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_SERVER_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_SERVER_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          echo "image=$ECR_SERVER_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
   build-and-push-frontend:
     runs-on: ubuntu-latest
@@ -80,7 +80,7 @@ jobs:
           docker build --build-arg NEXT_PUBLIC_LD_CLIENT_SDK_ID=$NEXT_PUBLIC_LD_CLIENT_SDK_ID \
             -t $ECR_REGISTRY/$ECR_FRONTEND_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_FRONTEND_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_FRONTEND_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          echo "image=$ECR_FRONTEND_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
   deploy-to-ecs:
     runs-on: ubuntu-latest
@@ -94,6 +94,10 @@ jobs:
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GitHubActionsRole
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Inject taskRoleArn and executionRoleArn
         run: |
@@ -114,7 +118,7 @@ jobs:
         with:
           task-definition: .deployment/task-definition.with-roles.json
           container-name: frontend
-          image: ${{ needs.build-and-push-frontend.outputs.image }}
+          image: ${{ steps.login-ecr.outputs.registry }}/${{ needs.build-and-push-frontend.outputs.image }}
           environment-variables: |
             ENV_PORT=3000
             AUTH_TRUST_HOST=true
@@ -131,7 +135,7 @@ jobs:
         with:
           task-definition: ${{ steps.render-frontend-container.outputs.task-definition }}
           container-name: server
-          image: ${{ needs.build-and-push-server.outputs.image }}
+          image: ${{ steps.login-ecr.outputs.registry }}/${{ needs.build-and-push-server.outputs.image }}
 
       - name: Deploy Amazon ECS service
         id: deploy-service
