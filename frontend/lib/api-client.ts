@@ -49,12 +49,8 @@ class ApiClient {
   private baseUrl: string;
 
   constructor() {
-    console.log(
-      '🔧 ApiClient constructor - Using relative URLs for API routes',
-    );
     // Use relative URLs - Next.js API routes will handle the proxying
     this.baseUrl = '/api';
-    console.log('  Base URL set to:', this.baseUrl);
   }
 
   private async request<T>(
