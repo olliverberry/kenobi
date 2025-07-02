@@ -5,6 +5,8 @@ import {
   LDFlagSet,
   LDProvider,
 } from 'launchdarkly-react-client-sdk';
+import Observability from '@launchdarkly/observability';
+import SessionReplay from '@launchdarkly/session-replay';
 import { ReactNode } from 'react';
 
 interface LaunchDarklyProviderProps {
@@ -25,6 +27,10 @@ export default function LaunchDarklyProvider({
       options={{
         bootstrap: flags,
         streaming: true, // Enable streaming for real-time updates
+        plugins: [
+          new Observability(),
+          new SessionReplay(),
+        ]
       }}
       timeout={5}
     >
