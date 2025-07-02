@@ -30,7 +30,8 @@
             "portMappings": [
                 {
                     "containerPort": 3000,
-                    "protocol": "tcp"
+                    "protocol": "tcp",
+                    "hostPort": 0
                 }
             ],
             "essential": true,
