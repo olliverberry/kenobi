@@ -21,6 +21,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import Header from '@/components/header';
 import { usePOVs } from '@/hooks/use-povs';
 
@@ -362,16 +367,24 @@ export default function POVOverview() {
                             : 'No activity yet'}
                         </div>
                         <div className='flex space-x-2'>
-                          <Button 
-                            variant='outline' 
-                            size='sm' 
-                            disabled
-                            title="Salesforce integration coming soon"
-                            className="cursor-not-allowed opacity-50"
-                          >
-                            <ExternalLink className='mr-1 h-3 w-3' />
-                            Salesforce
-                          </Button>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div>
+                                <Button 
+                                  variant='outline' 
+                                  size='sm' 
+                                  disabled
+                                  className="cursor-not-allowed opacity-50"
+                                >
+                                  <ExternalLink className='mr-1 h-3 w-3' />
+                                  Salesforce
+                                </Button>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Salesforce integration coming soon</p>
+                            </TooltipContent>
+                          </Tooltip>
                           <Button size='sm' asChild>
                             <Link href={`/dashboard/povs/${pov.id}`}>
                               {pov.status === 'setup'

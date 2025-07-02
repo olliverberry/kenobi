@@ -26,6 +26,11 @@ import {
 } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { usePOV } from '@/hooks/use-povs';
 import { DataBoundary } from '@/components/data-boundary';
 import { POVData } from '@/lib/api-client';
@@ -111,16 +116,24 @@ function POVDashboardContent({ pov }: { pov: POVData | null }) {
                 ),
               )}
             </div>
-            <Button
-              variant='outline'
-              size='sm'
-              className='gap-2 bg-transparent cursor-not-allowed opacity-50'
-              disabled
-              title="Salesforce integration coming soon"
-            >
-              <ExternalLink className='h-4 w-4' />
-              Salesforce
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    className='gap-2 bg-transparent cursor-not-allowed opacity-50'
+                    disabled
+                  >
+                    <ExternalLink className='h-4 w-4' />
+                    Salesforce
+                  </Button>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Salesforce integration coming soon</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
       </header>
