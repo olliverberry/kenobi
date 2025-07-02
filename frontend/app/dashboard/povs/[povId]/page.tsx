@@ -114,13 +114,12 @@ function POVDashboardContent({ pov }: { pov: POVData | null }) {
             <Button
               variant='outline'
               size='sm'
-              className='gap-2 bg-transparent'
-              asChild
+              className='gap-2 bg-transparent cursor-not-allowed opacity-50'
+              disabled
+              title="Salesforce integration coming soon"
             >
-              <Link href={`/salesforce/${pov?.salesforceOpportunityId}`}>
-                <ExternalLink className='h-4 w-4' />
-                Salesforce
-              </Link>
+              <ExternalLink className='h-4 w-4' />
+              Salesforce
             </Button>
           </div>
         </div>

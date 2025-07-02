@@ -362,13 +362,15 @@ export default function POVOverview() {
                             : 'No activity yet'}
                         </div>
                         <div className='flex space-x-2'>
-                          <Button variant='outline' size='sm' asChild>
-                            <Link
-                              href={`/salesforce/${pov.salesforceOpportunityId}`}
-                            >
-                              <ExternalLink className='mr-1 h-3 w-3' />
-                              Salesforce
-                            </Link>
+                          <Button 
+                            variant='outline' 
+                            size='sm' 
+                            disabled
+                            title="Salesforce integration coming soon"
+                            className="cursor-not-allowed opacity-50"
+                          >
+                            <ExternalLink className='mr-1 h-3 w-3' />
+                            Salesforce
                           </Button>
                           <Button size='sm' asChild>
                             <Link href={`/dashboard/povs/${pov.id}`}>

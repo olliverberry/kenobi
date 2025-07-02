@@ -36,6 +36,14 @@ export class UsersService {
       businessUnit: 'sales-engineering',
       title: 'Senior Sales Engineer',
     },
+    {
+      userId: 5,
+      email: 'glorence@launchdarkly.com',
+      firstName: 'Greg',
+      lastName: 'Lorence',
+      businessUnit: 'sales-engineering',
+      title: 'Sr. Manager, Solutions Engineering',
+    },
   ];
 
   findOne(email: string, password: string): User | undefined {
