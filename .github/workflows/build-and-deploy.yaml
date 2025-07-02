@@ -115,10 +115,9 @@ jobs:
           container-name: frontend
           image: ${{ steps.login-ecr.outputs.registry }}/${{ needs.build-and-push-frontend.outputs.image }}
           environment-variables: |
-            ENV_PORT=3001
             AUTH_TRUST_HOST=true
-            AUTH_URL=http://localhost:3001
-            BACKEND_URL=http://server:3000
+            AUTH_URL=http://localhost:3000
+            BACKEND_URL=http://server:3001
             NEXT_PUBLIC_LD_CLIENT_SDK_ID=${{ secrets.NEXT_PUBLIC_LD_CLIENT_SDK_ID }}
           secrets: |
             AUTH_SECRET=${{ secrets.AWS_AUTH_SECRET }}
