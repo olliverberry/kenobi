@@ -122,7 +122,7 @@ function POVDashboardContent({ pov }: { pov: POVData | null }) {
                   <Button
                     variant='outline'
                     size='sm'
-                    className='gap-2 bg-transparent cursor-not-allowed opacity-50'
+                    className='cursor-not-allowed gap-2 bg-transparent opacity-50'
                     disabled
                   >
                     <ExternalLink className='h-4 w-4' />

@@ -47,7 +47,6 @@ export class UsersService {
   ];
 
   findOne(email: string, password: string): User | undefined {
-    console.log(email, password);
     return this.users.find(
       (user) => user.email.toLowerCase() === email.toLowerCase(),
     );

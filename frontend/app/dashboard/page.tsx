@@ -370,11 +370,11 @@ export default function POVOverview() {
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <div>
-                                <Button 
-                                  variant='outline' 
-                                  size='sm' 
+                                <Button
+                                  variant='outline'
+                                  size='sm'
                                   disabled
-                                  className="cursor-not-allowed opacity-50"
+                                  className='cursor-not-allowed opacity-50'
                                 >
                                   <ExternalLink className='mr-1 h-3 w-3' />
                                   Salesforce

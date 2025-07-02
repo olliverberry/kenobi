@@ -3,12 +3,38 @@ import { Session } from 'next-auth';
 
 class LaunchDarklyServer {
   private static client: ld.LDClient | undefined = undefined;
+  private static initPromise: Promise<void> | undefined = undefined;
 
   async initialize() {
-    LaunchDarklyServer.client = ld.init(process.env.LD_SERVER_SDK_SECRET!);
-    await LaunchDarklyServer.client.waitForInitialization({
-      timeout: 5,
-    });
+    if (LaunchDarklyServer.initPromise) {
+      return LaunchDarklyServer.initPromise;
+    }
+
+    LaunchDarklyServer.initPromise = (async () => {
+      try {
+        if (!process.env.LD_SERVER_SDK_SECRET) {
+          console.warn(
+            '[LaunchDarkly] LD_SERVER_SDK_SECRET not found, using offline mode',
+          );
+          LaunchDarklyServer.client = ld.init('dummy-key', { offline: true });
+          return;
+        }
+
+        console.log('[LaunchDarkly] Initializing LaunchDarkly client...');
+        LaunchDarklyServer.client = ld.init(process.env.LD_SERVER_SDK_SECRET);
+
+        await LaunchDarklyServer.client.waitForInitialization({
+          timeout: 10,
+        });
+
+        console.log('[LaunchDarkly] Client initialized successfully');
+      } catch (error) {
+        console.error('[LaunchDarkly] Initialization failed:', error);
+        LaunchDarklyServer.client = ld.init('dummy-key', { offline: true });
+      }
+    })();
+
+    return LaunchDarklyServer.initPromise;
   }
 
   async getInitialContext(session: Session) {
@@ -28,12 +54,35 @@ class LaunchDarklyServer {
     if (!LaunchDarklyServer.client) {
       await this.initialize();
     }
-    const flagsState =
-      await LaunchDarklyServer.client!.allFlagsState(userContext);
-    return {
-      flags: flagsState.toJSON(),
-      context: userContext,
-    };
+
+    try {
+      if (
+        !LaunchDarklyServer.client ||
+        !LaunchDarklyServer.client.initialized()
+      ) {
+        console.warn('[LaunchDarkly] Client not ready, returning empty flags');
+        return {
+          flags: {},
+          context: userContext,
+        };
+      }
+
+      const flagsState =
+        await LaunchDarklyServer.client.allFlagsState(userContext);
+      console.log(
+        `[LaunchDarkly] Retrieved ${Object.keys(flagsState.toJSON()).length} flags`,
+      );
+      return {
+        flags: flagsState.toJSON(),
+        context: userContext,
+      };
+    } catch (error) {
+      console.error('[LaunchDarkly] Error getting flags:', error);
+      return {
+        flags: {},
+        context: userContext,
+      };
+    }
   }
 }
 

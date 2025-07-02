@@ -3,11 +3,14 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(request: NextRequest) {
   try {
     const url = new URL(request.url);
-    const response = await fetch(`${process.env.BACKEND_URL}/api/povs${url.search}`, {
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/api/povs${url.search}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       throw new Error(`Backend responded with ${response.status}`);
