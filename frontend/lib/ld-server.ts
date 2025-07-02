@@ -12,7 +12,9 @@ class LaunchDarklyServer {
 
     LaunchDarklyServer.initPromise = (async () => {
       try {
-        if (!process.env.LD_SERVER_SDK_SECRET) {
+        const sdkKey = process.env.LD_SERVER_SDK_SECRET;
+        
+        if (!sdkKey) {
           console.warn(
             '[LaunchDarkly] LD_SERVER_SDK_SECRET not found, using offline mode',
           );
@@ -20,8 +22,18 @@ class LaunchDarklyServer {
           return;
         }
 
+        // Log SDK key info for debugging
+        console.log(`[LaunchDarkly] SDK Key found: ${sdkKey.substring(0, 10)}...`);
+        
+        if (sdkKey.includes('<') || sdkKey.includes('>')) {
+          console.warn('[LaunchDarkly] SDK key appears to be a placeholder value:', sdkKey);
+          console.warn('[LaunchDarkly] Using offline mode due to placeholder key');
+          LaunchDarklyServer.client = ld.init('dummy-key', { offline: true });
+          return;
+        }
+
         console.log('[LaunchDarkly] Initializing LaunchDarkly client...');
-        LaunchDarklyServer.client = ld.init(process.env.LD_SERVER_SDK_SECRET);
+        LaunchDarklyServer.client = ld.init(sdkKey);
 
         await LaunchDarklyServer.client.waitForInitialization({
           timeout: 10,
