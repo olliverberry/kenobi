@@ -117,7 +117,7 @@ jobs:
           environment-variables: |
             AUTH_TRUST_HOST=true
             AUTH_URL=https://kenobi.stuartcmehrens.dev
-            BACKEND_URL=http://server:3001
+            BACKEND_URL=http://localhost:3001
             NEXT_PUBLIC_LD_CLIENT_SDK_ID=${{ secrets.NEXT_PUBLIC_LD_CLIENT_SDK_ID }}
           secrets: |
             AUTH_SECRET=${{ secrets.AWS_AUTH_SECRET }}

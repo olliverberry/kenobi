@@ -2,8 +2,13 @@ import { auth } from '@/auth';
 import { NextAuthRequest } from 'next-auth';
 
 export default auth((req: NextAuthRequest) => {
+  console.log('🔍 Middleware - Request URL:', req.nextUrl.href);
+  console.log('🔍 Middleware - Origin:', req.nextUrl.origin);
+  console.log('🔍 Middleware - Has auth:', !!req.auth);
+  
   if (!req.auth && req.nextUrl.pathname !== '/signin') {
     const newUrl = new URL('/signin', req.nextUrl.origin);
+    console.log('🔍 Middleware - Redirecting to:', newUrl.href);
     return Response.redirect(newUrl);
   }
 

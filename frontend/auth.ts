@@ -34,6 +34,8 @@ const providers: Provider[] = [
     authorize: async (credentials) => {
       try {
         // Use the API route instead of direct backend call
+        console.log('🔍 AUTH_URL in production:', process.env.AUTH_URL);
+        console.log('🔍 All env vars:', Object.keys(process.env).filter(key => key.includes('AUTH')));
         const response = await fetch(`${process.env.AUTH_URL}/api/auth/login`, {
           method: 'POST',
           headers: {
