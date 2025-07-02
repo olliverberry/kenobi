@@ -32,11 +32,6 @@ const providers: Provider[] = [
       },
     },
     authorize: async (credentials) => {
-      console.log('🔐 Auth.js authorize called with:', {
-        email: credentials.email,
-        hasPassword: !!credentials.password,
-      });
-
       try {
         // Use the API route instead of direct backend call
         const response = await fetch(`${process.env.AUTH_URL}/api/auth/login`, {
@@ -55,17 +50,11 @@ const providers: Provider[] = [
         }
 
         const user = await response.json();
-        console.log('✅ Auth.js login successful:', user);
-
         if (!user?.success) {
-          console.error('❌ Auth.js login failed - no success flag');
           throw new Error('Invalid credentials.');
         }
-
-        console.log('✅ Auth.js returning user data:', user.data);
         return user.data;
       } catch (error) {
-        console.error('💥 Auth.js authorize error:', error);
         throw error;
       }
     },

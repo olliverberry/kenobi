@@ -116,7 +116,7 @@ jobs:
           image: ${{ steps.login-ecr.outputs.registry }}/${{ needs.build-and-push-frontend.outputs.image }}
           environment-variables: |
             AUTH_TRUST_HOST=true
-            AUTH_URL=http://localhost:3000
+            AUTH_URL=https://kenobi.stuartcmehrens.dev
             BACKEND_URL=http://server:3001
             NEXT_PUBLIC_LD_CLIENT_SDK_ID=${{ secrets.NEXT_PUBLIC_LD_CLIENT_SDK_ID }}
           secrets: |
