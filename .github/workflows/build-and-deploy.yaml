@@ -103,6 +103,11 @@ jobs:
             '.taskRoleArn = $task | .executionRoleArn = $exec' \
             .deployment/task-definition.json > .deployment/task-definition.with-roles.json
 
+      - name: Print resolved image URIs
+        run: |
+          echo "Frontend image: ${{ needs.build-and-push-frontend.outputs.image }}"
+          echo "Server image:   ${{ needs.build-and-push-server.outputs.image }}"
+
       - name: Render Amazon ECS task definition
         id: render-frontend-container
         uses: aws-actions/amazon-ecs-render-task-definition@v1
