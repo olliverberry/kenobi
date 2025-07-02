@@ -18,6 +18,8 @@ permissions:
 jobs:
   build-and-push-server:
     runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.build-image.outputs.image }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -36,18 +38,20 @@ jobs:
         id: build-image
         working-directory: ./server
         env:
-            ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-            IMAGE_TAG: ${{ github.sha }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-            # Build a docker container and
-            # push it to ECR so that it can
-            # be deployed to ECS.
-            docker build -t $ECR_REGISTRY/$ECR_SERVER_REPOSITORY:$IMAGE_TAG .
-            docker push $ECR_REGISTRY/$ECR_SERVER_REPOSITORY:$IMAGE_TAG
-            echo "image=$ECR_REGISTRY/$ECR_SERVER_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          docker build -t $ECR_REGISTRY/$ECR_SERVER_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_SERVER_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_SERVER_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
   build-and-push-frontend:
     runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.build-image.outputs.image }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -66,17 +70,17 @@ jobs:
         id: build-image
         working-directory: ./frontend
         env:
-            ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-            IMAGE_TAG: ${{ github.sha }}
-            NEXT_PUBLIC_LD_CLIENT_SDK_ID: ${{ secrets.NEXT_PUBLIC_LD_CLIENT_SDK_ID }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+          NEXT_PUBLIC_LD_CLIENT_SDK_ID: ${{ secrets.NEXT_PUBLIC_LD_CLIENT_SDK_ID }}
         run: |
-            # Build a docker container and
-            # push it to ECR so that it can
-            # be deployed to ECS.
-            docker build --build-arg NEXT_PUBLIC_LD_CLIENT_SDK_ID=$NEXT_PUBLIC_LD_CLIENT_SDK_ID \
-              -t $ECR_REGISTRY/$ECR_FRONTEND_REPOSITORY:$IMAGE_TAG .
-            docker push $ECR_REGISTRY/$ECR_FRONTEND_REPOSITORY:$IMAGE_TAG
-            echo "image=$ECR_REGISTRY/$ECR_FRONTEND_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          docker build --build-arg NEXT_PUBLIC_LD_CLIENT_SDK_ID=$NEXT_PUBLIC_LD_CLIENT_SDK_ID \
+            -t $ECR_REGISTRY/$ECR_FRONTEND_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_FRONTEND_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_FRONTEND_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
   deploy-to-ecs:
     runs-on: ubuntu-latest
@@ -98,7 +102,6 @@ jobs:
             --arg exec "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/ecsTaskExecutionRole" \
             '.taskRoleArn = $task | .executionRoleArn = $exec' \
             .deployment/task-definition.json > .deployment/task-definition.with-roles.json
-        
 
       - name: Render Amazon ECS task definition
         id: render-frontend-container
@@ -116,7 +119,7 @@ jobs:
           secrets: |
             AUTH_SECRET=${{ secrets.AWS_AUTH_SECRET }}
             LD_SERVER_SDK_SECRET=${{ secrets.AWS_LD_SERVER_SDK_SECRET }}
-          
+
       - name: Render Amazon ECS task definition
         id: render-server-container
         uses: aws-actions/amazon-ecs-render-task-definition@v1
