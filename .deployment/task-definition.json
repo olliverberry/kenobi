@@ -27,13 +27,7 @@
             "name": "server",
             "image": "placeholder",
             "cpu": 0,
-            "portMappings": [
-                {
-                    "containerPort": 3000,
-                    "protocol": "tcp",
-                    "hostPort": 0
-                }
-            ],
+            "portMappings": [],
             "essential": true,
             "environment": [],
             "mountPoints": [],
